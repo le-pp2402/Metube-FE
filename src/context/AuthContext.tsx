@@ -3,7 +3,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { checkAuth } from "@/utils/authApi";
 
-// Định nghĩa kiểu dữ liệu cho user
 interface User {
     id: number;
     username: string;
@@ -18,7 +17,6 @@ interface AuthContextType {
     logout: () => void;
 }
 
-// Tạo Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -32,13 +30,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .then((res) => {
                     res = res.data;
 
-                    console.log({
-                        id: res.data.id,
-                        username: res.data.username,
-                        email: res.data.email,
-                        elo: res.data.elo,
-                        is_admin: res.data.is_admin,
-                    });
                     setUser({
                         id: res.data.id,
                         username: res.data.username,

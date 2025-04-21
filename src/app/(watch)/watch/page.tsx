@@ -9,16 +9,6 @@ import RecommendList from '@/components/watch/RecommendList';
 export default function Watch() {
     const [id, setId] = useState(0);
 
-    // type Video = {
-    //     id: string;
-    //     title: string;
-    //     video: string;
-    //     thumbnail: string;
-    //     dateTime: string;
-    // };
-
-    // const [video, setVideo] = useState<Video>();
-
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         try {

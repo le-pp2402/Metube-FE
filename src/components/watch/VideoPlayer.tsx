@@ -30,7 +30,7 @@ function VideoPlayer({ idVideo }: VideoPlayerProps) {
     );
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/resources/${idVideo}`).then((response) => {
+        axios.get(`https://web.pphatdev.tech/resources/${idVideo}`).then((response) => {
             const res = response.data.data;
 
             let result: VideoInfo = {
@@ -39,7 +39,7 @@ function VideoPlayer({ idVideo }: VideoPlayerProps) {
                 video: res.video,
                 thumbnail: res.title
             }
-            console.log("Before " + result);
+            
             // this is temp solution, you have to handle this after finish modify transcoding module
             result.video = result.video.substring(0, result.video.lastIndexOf('/') + 1) + 'index.m3u8';
 

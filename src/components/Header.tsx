@@ -55,6 +55,9 @@ export default function Header() {
                             <DropdownMenuItem>
                                 <span className="w-full">Hello, {user.username}</span>
                             </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Link href="/workspace" className="w-full">Your workspace</Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={logout}>
                                 <span className="w-full">Logout</span>
                             </DropdownMenuItem>
