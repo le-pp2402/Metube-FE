@@ -2,35 +2,16 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { User } from '@/types/user';
+import { checkAuth } from '@/utils/authApi';
 
 const BACKEND_API_URL = process.env.API; 
-
-export async function createSession(userId: string) {
-  const res = await fetch(`${BACKEND_API_URL}/api/session/create`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to create session');
-  }
-
-  const { token, expiresAt } = await res.json();
-
-  (await cookies()).set('session', token, {
-    httpOnly: true,
-    secure: true,
-    expires: new Date(expiresAt),
-    sameSite: 'lax',
-    path: '/',
-  });
-
-  redirect('/dashboard');
-}
+const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME ?? 'token';
 
 export async function verifySession() {
-  const token = (await cookies()).get('session')?.value;
+  const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
+
+  console.log("Token from cookie:", token);
 
   const res = await fetch(`${BACKEND_API_URL}/api/session/verify`, {
     method: 'POST',
@@ -50,7 +31,7 @@ export async function verifySession() {
 }
 
 export async function updateSession() {
-  const token = (await cookies()).get('session')?.value;
+  const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
 
   if (!token) return null;
 
@@ -68,7 +49,7 @@ export async function updateSession() {
 
   const { newToken, expiresAt } = await res.json();
 
-  (await cookies()).set('session', newToken, {
+  (await cookies()).set(AUTH_COOKIE_NAME, newToken, {
     httpOnly: true,
     secure: true,
     expires: new Date(expiresAt),
@@ -78,7 +59,7 @@ export async function updateSession() {
 }
 
 export async function deleteSession() {
-  const token = (await cookies()).get('session')?.value;
+  const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
 
   if (token) {
     await fetch(`${BACKEND_API_URL}/api/session/logout`, {
@@ -92,4 +73,38 @@ export async function deleteSession() {
 
   (await cookies()).delete('session');
   redirect('/login');
+}
+
+
+export async function getUserFromCookie(): Promise<User | null> {
+    try {
+        const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
+
+        console.log("Token from cookie:", token);
+
+        if (!token) {
+            return null;
+        }
+
+        const res = await checkAuth(token);
+
+        const userData = res.data?.data;
+
+        if (!userData) {
+            (await cookies()).delete(AUTH_COOKIE_NAME);
+            return null;
+        }
+
+        return {
+            id: userData.id,
+            username: userData.username,
+            email: userData.email,
+            is_admin: userData.is_admin,
+        };
+
+    } catch (error) {
+        console.error("Error getting user from cookie:", error);
+        (await cookies()).delete(AUTH_COOKIE_NAME);
+        return null;
+    }
 }

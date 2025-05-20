@@ -11,11 +11,16 @@ export type VerifyResponse = {
 };
 
 export interface LoginSuccessResponse {
-    username: string;
-    email: string;
-    is_admin: boolean;
-    elo: number;
-    token: string;
+    code: number;
+    data: {
+        username: string;
+        email: string;
+        is_admin: boolean;
+        elo: number;
+        token: string;
+    };
+    message: string;
+    status: string;
 }
 
 export interface LoginErrorResponse {

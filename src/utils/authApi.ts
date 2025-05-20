@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Cấu hình API
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.BACKEND_API_URL ?? 'http://localhost:8080'; 
 
 // Hàm đăng ký
 export const registerUser = async (data: { username: string; email: string; password: string }) => {

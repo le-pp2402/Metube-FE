@@ -3,12 +3,17 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { signup } from '@/app/actions/auth/auth';
+import { signup } from '@/features/auth/api/auth';
 import { useFormState, useFormStatus } from 'react-dom';
-import { useActionState } from 'react';
+import { ActionState } from '@/features/auth/utils/form-state';
+
+const initialState: ActionState = {
+    errors: undefined,
+    message: null
+};
 
 export function SignupForm() {
-    const [state, action] = useActionState(signup, undefined);
+    const [state, action] = useFormState<ActionState, FormData>(signup, initialState);
 
     return (
         <form action={action}>
@@ -35,7 +40,7 @@ export function SignupForm() {
                     <div className="text-sm text-red-500">
                         <p>Password must:</p>
                         <ul>
-                            {state.errors.password.map((error) => (
+                            {state.errors.password.map((error: string) => (
                                 <li key={error}>- {error}</li>
                             ))}
                         </ul>
@@ -45,7 +50,7 @@ export function SignupForm() {
                 {
                     state?.message && (
                         <div className="text-sm text-red-500">
-                            {state?.message}
+                            {state.message}
                         </div>
                     )
                 }
@@ -60,7 +65,7 @@ export function SignupButton() {
 
     return (
         <Button aria-disabled={pending} type="submit" className="mt-2 w-full">
-            {pending ? 'Submitting...' : 'Login'}
+            {pending ? 'Submitting...' : 'Sign up'}
         </Button>
     );
 }

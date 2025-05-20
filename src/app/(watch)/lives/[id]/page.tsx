@@ -21,7 +21,6 @@ type LiveSession = {
     path: string;
 };
 
-// This is now a server component
 export default async function LivePage({ params }: PageProps) {
     const { id } = await params;
 
@@ -43,10 +42,10 @@ export default async function LivePage({ params }: PageProps) {
     }
 
     return (
-        <main className="flex flex-1 h-screen bg-white text-gray-900">
+        <main className="flex flex-1 h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900">
             {/* Left side: Video */}
-            <div className="flex-1 p-6 overflow-hidden">
-                <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+            <div className="flex-1 p-8 overflow-hidden">
+                <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200/50 backdrop-blur-sm bg-white/80">
                     <MediaPlayer title={liveSession.title} src={`http://localhost:81/hls/${liveSession.path}`}>
                         <MediaProvider />
                         <DefaultVideoLayout
@@ -58,7 +57,11 @@ export default async function LivePage({ params }: PageProps) {
             </div>
 
             {/* Right side: Chat */}
-            <aside className="w-[400px] max-w-full flex flex-col border-l border-gray-200 bg-gray-50">
+            <aside className="w-[400px] max-w-full flex flex-col border-l border-gray-200/50 bg-white/90 backdrop-blur-sm">
+                <div className="p-4 border-b border-gray-200/50">
+                    <h2 className="text-lg font-semibold text-gray-800">Live Chat</h2>
+                    <p className="text-sm text-gray-500">Join the conversation</p>
+                </div>
                 <div className="flex-1 overflow-y-auto p-4">
                     <LiveChat channelId={liveSession.id} />
                 </div>

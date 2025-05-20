@@ -8,12 +8,20 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Search, User } from "lucide-react";
 import { Tv, Radio, Flame, Star } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+    const { user, logout, refreshUser } = useAuth();
+    const [mounted, setMounted] = useState(false);
 
-    const { user, logout } = useAuth();
+    useEffect(() => {
+        setMounted(true);
+        refreshUser();
+    }, [refreshUser]);
 
-    console.log(user);
+    if (!mounted) {
+        return null;
+    }
 
     return (
         <nav className="flex items-center justify-between px-6 py-3 bg-white shadow-md">
@@ -28,12 +36,6 @@ export default function Header() {
                     </Link>
                     <Link href="/lives" className="flex items-center gap-2 text-gray-700 hover:text-primary transition">
                         <Radio className="h-5 w-5" /> Live Channels
-                    </Link>
-                    <Link href="/trending" className="flex items-center gap-2 text-gray-700 hover:text-primary transition">
-                        <Flame className="h-5 w-5" /> Trending
-                    </Link>
-                    <Link href="/watch-later" className="flex items-center gap-2 text-gray-700 hover:text-primary transition">
-                        <Star className="h-5 w-5" /> Recommend For You
                     </Link>
                 </div>
             </div>
@@ -52,22 +54,34 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-40">
                     {user ? (
                         <>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-default">
                                 <span className="w-full">Hello, {user.username}</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Link href="/workspace" className="w-full">Your workspace</Link>
+                            <DropdownMenuItem asChild>
+                                <Link href="/workspace" className="w-full">Dashboard</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={logout}>
+                            <DropdownMenuItem asChild>
+                                <Link href="/workspace/videos" className="w-full">My Videos</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/workspace/upload" className="w-full">Upload Video</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/workspace/stream-key" className="w-full">Stream Key</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/workspace/channel" className="w-full">Channel Settings</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={logout} className="cursor-pointer">
                                 <span className="w-full">Logout</span>
                             </DropdownMenuItem>
                         </>
                     ) : (
                         <>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem asChild>
                                 <Link href="/login" className="w-full">Login</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem asChild>
                                 <Link href="/register" className="w-full">Register</Link>
                             </DropdownMenuItem>
                         </>

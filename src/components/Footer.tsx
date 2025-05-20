@@ -2,7 +2,7 @@ import { Mail } from "lucide-react";
 
 export default function Footer() {
     return (
-        <footer className="bg-gray-100 py-6 px-6 text-center text-gray-600">
+        <footer className="bg-gray-100 py-6 px-6 text-center text-gray-600 w-full">
             <p className="text-sm">
                 This website is part of my school graduation project and is non-profit. Feel free to contact me if you need to remove your video or have any concerns.
             </p>

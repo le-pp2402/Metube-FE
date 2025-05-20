@@ -1,47 +1,40 @@
-"use client"
-import React, { experimental_useEffectEvent, useEffect, useState } from 'react';
-import { Card } from "@/components/ui/card";
-import VideoPlayer from '@/components/watch/VideoPlayer'; // Import VideoPlayer component
-import Comments from '@/components/watch/Comments'; // Import Comments component
-import RecommendList from '@/components/watch/RecommendList';
+"use client";
 
+import React, { useEffect, useState } from "react";
+import VideoPlayer from "@/components/watch/VideoPlayer";
+import RecommendList from "@/components/watch/RecommendList";
+import DescriptionVideoCard from "@/components/watch/DescriptionVideoCard";
+import { useSearchParams } from "next/navigation";
 
-export default function Watch() {
-    const [id, setId] = useState(0);
+export default function WatchPage() {
+    const searchParams = useSearchParams();
+    const [videoId, setVideoId] = useState<number | null>(null);
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        try {
-            console.log(urlParams.get('id'));
-            if (urlParams.has('id')) {
-                const id = parseInt(urlParams.get('id') ?? '0');
-                setId(id);
-                console.log(id);
-            }
-        } catch (error) {
-            console.log(error);
+        const idParam = searchParams.get("id");
+        if (!idParam) return;
+
+        const idNum = Number(idParam);
+        if (!Number.isNaN(idNum)) {
+            setVideoId(idNum);
         }
-    }, []);
+    }, [searchParams]);
+
+    if (videoId === null) {
+        return <div className="text-white p-4">Loading video…</div>;
+    }
 
     return (
         <main className="flex flex-1 overflow-hidden text-white">
-            {/* Video Player and Comments Section */}
-            <div className="flex-1 p-4 space-y-4">
-                {/* Video Player */}
+            <div className="basis-2/3 p-4 space-y-4">
                 <div className="rounded-lg overflow-hidden mb-4">
-                    <VideoPlayer idVideo={id} />
+                    <VideoPlayer idVideo={videoId} />
                 </div>
-
-                {/* Comments Section */}
-                <div className="p-4 rounded-lg">
-                    <h2 className="text-xl font-bold mb-4">Comments</h2>
-                    <Comments />
+                <div className="p-6 rounded-xl bg-white shadow-md border border-blue-200">
+                    <DescriptionVideoCard id={videoId} />
                 </div>
             </div>
-
-            {/* Recommended Videos Sidebar */}
-            <aside className="w-80 p-4 overflow-y-auto space-y-4">
-                <h2 className="text-xl font-bold mb-4">Recommended Videos</h2>
+            <aside className="basis-1/3 p-4 overflow-y-auto space-y-4">
                 <RecommendList />
             </aside>
         </main>
