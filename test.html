@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <h1>HLS Video Player</h1>
+    <video id="video" controls width="640"></video>
+    <select id="quality-selector"></select>
+
+    <script>
+        const video = document.getElementById('video');
+        const qualitySelector = document.getElementById('quality-selector');
+        var hls = new Hls({  
+            maxBufferSize: 30 * 1000 * 1000,  // Limit buffer to 30MB  
+            maxMaxBufferLength: 10, // Limit buffer length  
+            liveSyncDurationCount: 2, // Keep only recent segments  
+            autoStartLoad: false, // Don't load all files at start  
+        });
+        const masterPlaylist = './tes/master.m3u8';
+        
+        if (Hls.isSupported()) {
+            hls.loadSource(masterPlaylist);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                const levels = hls.levels;
+                levels.forEach((level, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = level.height ? `${level.height}p` : `Auto`;
+                    qualitySelector.appendChild(option);
+                });
+                qualitySelector.addEventListener('change', function () {
+                    hls.currentLevel = parseInt(this.value);
+                });
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = masterPlaylist;
+        }
+    </script>
+</body>
+</html>
