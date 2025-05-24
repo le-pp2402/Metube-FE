@@ -13,6 +13,7 @@ export async function getLiveSession() {
         },
     });
 
+        
     if (!res.ok) {
         const error = await res.json();
         console.log("FILE[api/live/live-session.ts] | error", error);

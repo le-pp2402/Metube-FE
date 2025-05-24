@@ -17,7 +17,10 @@ export default function AllLiveSessions() {
     const fetchLiveSessions = async () => {
       try {
         const res = await getLiveSession();
-        setLiveSessions(res?.data?.data || []);
+
+        console.log(res);
+
+        setLiveSessions(res || []);
       } catch (error) {
         console.error("Error fetching videos:", error);
       }
