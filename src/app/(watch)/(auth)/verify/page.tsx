@@ -1,13 +1,12 @@
 import { OtpForm } from "./otp-form";
 
 interface VerifyOtpPageProps {
-    searchParams: {
-        email?: string;
-    };
+    searchParams: Promise<{ email?: string }>
 }
 
 export default async function VerifyOtpPage({ searchParams }: VerifyOtpPageProps) {
-    const emailToVerify = (await searchParams).email;
+    const params = await searchParams;
+    const emailToVerify = params.email;
 
     if (!emailToVerify) {
         return (
