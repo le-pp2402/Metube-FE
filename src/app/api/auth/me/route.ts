@@ -12,7 +12,7 @@ export async function GET() {
         
         if (!token) {
             return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-        }
+        }   
 
         const response = await checkAuth(token);
         

@@ -57,7 +57,7 @@ export function AuthProvider({
 
     const logout = useCallback(async () => {
         try {
-            const result = await serverLogout();
+            await serverLogout();
             setUser(null);
             router.push("/");
             router.refresh();
