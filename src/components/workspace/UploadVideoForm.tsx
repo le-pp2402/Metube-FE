@@ -52,12 +52,14 @@ export default function UploadVideoForm() {
     async function onSubmit(values: FormValues) {
         try {
             const { url: uploadUrl } = await getPresignedUrl({ title: values.title });
-            // Prepare listener BEFORE opening popup
+
+            const finalUrl = uploadUrl.replace("http://minio:9000", "https://s3.pphatdev.tech");
+            console.log('Presigned URL:', finalUrl);
             const handlePopupReady = (event: MessageEvent) => {
                 if (event.origin !== window.location.origin) return;
                 if (event.data === 'popup-ready' && videoFileRef.current) {
                     const fileToSend = videoFileRef.current;
-                    popup?.postMessage({ uploadUrl, file: fileToSend }, window.location.origin);
+                    popup?.postMessage({ uploadUrl: finalUrl, file: fileToSend }, window.location.origin);
                     window.removeEventListener('message', handlePopupReady);
                 }
             };
