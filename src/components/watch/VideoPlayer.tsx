@@ -18,7 +18,7 @@ interface VideoPlayerProps {
 
 // TODO: sau khi transcoding xong video thì ta sẽ tiền hành update video path thành path m3u8 trong module transcoding
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL ?? 'http://localhost:8080';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL ?? 'http://localhost:8080';
 
 function VideoPlayer({ idVideo }: VideoPlayerProps) {
 
