@@ -12,25 +12,37 @@ export default async function signInWithGoogle(token: string) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            ggToken: token
-        }),
+        body: JSON.stringify({ ggToken: token }),
     });
 
-    const successData = await res.json();
-    console.log('FILE[api/auth/google.ts] | signInWithGoogle | successData', successData);
-
-    if (res.ok) {
-        const cookieStore = await cookies();
-        cookieStore.set(AUTH_COOKIE_NAME, successData.data.token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7,
-            path: '/',
-            sameSite: 'lax',
-        });
-        return true;
-    } else {
+    if (!res.ok) {
+        console.error('Google sign-in failed:', res.status, res.statusText);
+        try {
+            const errorData = await res.json();
+            console.error('Error response body:', errorData);
+        } catch (e) {
+            console.error('Error parsing error JSON:', e);
+        }
         return false;
     }
+
+    let successData;
+    try {
+        successData = await res.json();
+        console.log('FILE[api/auth/google.ts] | signInWithGoogle | successData', successData);
+    } catch (e) {
+        console.error('Failed to parse success JSON:', e);
+        return false;
+    }
+
+    const cookieStore = cookies();
+    (await cookieStore).set(AUTH_COOKIE_NAME, successData.data.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+        sameSite: 'lax',
+    });
+
+    return true;
 }
