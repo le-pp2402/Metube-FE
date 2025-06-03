@@ -1,10 +1,11 @@
 "use server";
-import { LoginSuccessResponse } from "@/features/auth/utils/form-state";
 import { cookies } from "next/headers";
 
 export default async function signInWithGoogle(token: string) {
     const AUTH_API_URL = process.env.BACKEND_API_URL ?? 'http://localhost:8888';
     const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME ?? 'token';
+
+    console.log('FILE[api/auth/google.ts] | signInWithGoogle | AUTH_API_URL', AUTH_API_URL);
 
     const res = await fetch(`${AUTH_API_URL}/google`, {
         method: 'POST',
@@ -12,12 +13,11 @@ export default async function signInWithGoogle(token: string) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            ggToken: token,
+            ggToken: token
         }),
     });
 
-    const successData: LoginSuccessResponse = await res.json();
-
+    const successData = await res.json();
     console.log('FILE[api/auth/google.ts] | signInWithGoogle | successData', successData);
 
     if (res.ok) {
@@ -29,7 +29,8 @@ export default async function signInWithGoogle(token: string) {
             path: '/',
             sameSite: 'lax',
         });
+        return true;
+    } else {
+        return false;
     }
-
-    return res;
 }

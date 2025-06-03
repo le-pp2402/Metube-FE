@@ -1,48 +1,61 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { FcGoogle } from 'react-icons/fc';
 import signInWithGoogle from "@/app/api/auth/google";
 
-
 export default function LoginPage() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/workspace';
+    const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
+
+    const handleGoogleSignIn = async (response) => {
+        try {
+            console.log('Google Sign-In response:', response);
+
+            if (!response || !response.credential) {
+                console.error('No credential received from Google');
+                return;
+            }
+
+            const res = await signInWithGoogle(response.credential);
+
+            if (res) {
+                console.log('Sign-in successful, redirecting...');
+                window.location.href = callbackUrl;
+            } else {
+                alert('Sign-in failed. F5 and try again.');
+            }
+        } catch (error) {
+            console.error('Error during sign-in:', error);
+            alert('An error occurred during sign-in. Please try again.');
+        }
+    };
 
     useEffect(() => {
-        // Load Google Identity Services script
+        if (window.google) {
+            initializeGoogleSignIn();
+            return;
+        }
+
         const script = document.createElement('script');
         script.src = 'https://accounts.google.com/gsi/client';
         script.async = true;
         script.defer = true;
-        document.head.appendChild(script);
 
-        // Initialize Google Sign-In when script loads
         script.onload = () => {
-            if (window.google) {
-                window.google.accounts.id.initialize({
-                    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-                    callback: handleGoogleSignIn,
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                });
-
-                // Render the sign-in button
-                window.google.accounts.id.renderButton(
-                    document.getElementById("google-signin-button"),
-                    {
-                        theme: "outline",
-                        size: "large",
-                        type: "icon",
-                        shape: "circle",
-                        width: 48,
-                        height: 48,
-                    }
-                );
-            }
+            console.log('Google script loaded');
+            initializeGoogleSignIn();
         };
+
+        script.onerror = () => {
+            console.error('Failed to load Google script');
+            setIsGoogleLoaded(false);
+        };
+
+        document.head.appendChild(script);
 
         return () => {
             // Cleanup script when component unmounts
@@ -52,23 +65,59 @@ export default function LoginPage() {
         };
     }, []);
 
-    const handleGoogleSignIn = async (response) => {
-        try {
-            const res = await signInWithGoogle(response.credential);
+    const initializeGoogleSignIn = () => {
+        if (!window.google || !window.google.accounts) {
+            console.error('Google accounts not available');
+            return;
+        }
 
-            if (res.ok) {
-                window.location.href = "/";
-            } else {
-                console.error('Sign-in failed:', await res.json());
+        try {
+            const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+            if (!clientId) {
+                console.error('Google Client ID not found in environment variables');
+                return;
             }
+
+            console.log('Initializing Google Sign-In with client ID:', clientId);
+
+            window.google.accounts.id.initialize({
+                client_id: clientId,
+                callback: handleGoogleSignIn,
+                auto_select: false,
+                cancel_on_tap_outside: true,
+            });
+
+            setIsGoogleLoaded(true);
+            console.log('Google Sign-In initialized successfully');
+
         } catch (error) {
-            console.error('Error during sign-in:', error);
+            console.error('Error initializing Google Sign-In:', error);
+            setIsGoogleLoaded(false);
         }
     };
 
     const handleCustomGoogleSignIn = () => {
-        if (window.google) {
-            window.google.accounts.id.prompt();
+        console.log('Custom Google Sign-In button clicked');
+
+        if (!window.google || !window.google.accounts) {
+            console.error('Google Sign-In not initialized');
+            alert('Google Sign-In is not available. Please refresh the page and try again.');
+            return;
+        }
+
+        try {
+            window.google.accounts.id.prompt((notification) => {
+                console.log('Google prompt notification:', notification);
+                if (notification.isNotDisplayed()) {
+                    console.log('Google One Tap not displayed');
+                } else if (notification.isSkippedMoment()) {
+                    console.log('Google One Tap skipped');
+                }
+            });
+        } catch (error) {
+            console.error('Error triggering Google Sign-In:', error);
+            alert('Unable to open Google Sign-In. Please try again.');
         }
     };
 
@@ -93,11 +142,21 @@ export default function LoginPage() {
                     <div className="flex justify-center gap-4 mb-8">
                         <button
                             onClick={handleCustomGoogleSignIn}
-                            className="rounded-full border border-zinc-200 p-3 hover:bg-zinc-50 transition"
+                            disabled={!isGoogleLoaded}
+                            className={`rounded-full border border-zinc-200 p-3 transition ${isGoogleLoaded
+                                ? 'hover:bg-zinc-50 cursor-pointer'
+                                : 'opacity-50 cursor-not-allowed'
+                                }`}
+                            title={isGoogleLoaded ? 'Sign in with Google' : 'Loading Google Sign-In...'}
                         >
                             <FcGoogle size={22} />
                         </button>
                     </div>
+                    {!isGoogleLoaded && (
+                        <div className="text-center text-xs text-zinc-400 mb-4">
+                            Loading Google Sign-In...
+                        </div>
+                    )}
                     <div className="text-center text-sm text-zinc-500">
                         Not a member?{' '}
                         <a href="/register" className="text-green-700 font-medium hover:underline">Register now</a>
@@ -123,8 +182,6 @@ export default function LoginPage() {
                         <path d="M158 82 L164 85 L158 88 Z" fill="#B7EACD" />
                         {/* Language Symbols */}
                         <text x="60" y="60" fontSize="12" fill="#B7EACD">En</text>
-                        <text x="90" y="60" fontSize="12" fill="#B7EACD">Es</text>
-                        <text x="120" y="60" fontSize="12" fill="#B7EACD">Fr</text>
                     </svg>
                     <div className="mt-8 text-center">
                         <h2 className="text-xl font-semibold text-zinc-800 mb-2">Watch Videos, Live Streams & More</h2>
