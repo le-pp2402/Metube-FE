@@ -16,7 +16,6 @@ export interface LoginSuccessResponse {
         username: string;
         email: string;
         is_admin: boolean;
-        elo: number;
         token: string;
     };
     message: string;

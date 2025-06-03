@@ -1,13 +1,76 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { FcGoogle } from 'react-icons/fc';
-import { FaApple, FaFacebookF } from 'react-icons/fa';
+import signInWithGoogle from "@/app/api/auth/google";
+
 
 export default function LoginPage() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/workspace';
+
+    useEffect(() => {
+        // Load Google Identity Services script
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+
+        // Initialize Google Sign-In when script loads
+        script.onload = () => {
+            if (window.google) {
+                window.google.accounts.id.initialize({
+                    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                // Render the sign-in button
+                window.google.accounts.id.renderButton(
+                    document.getElementById("google-signin-button"),
+                    {
+                        theme: "outline",
+                        size: "large",
+                        type: "icon",
+                        shape: "circle",
+                        width: 48,
+                        height: 48,
+                    }
+                );
+            }
+        };
+
+        return () => {
+            // Cleanup script when component unmounts
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+        };
+    }, []);
+
+    const handleGoogleSignIn = async (response) => {
+        try {
+            const res = await signInWithGoogle(response.credential);
+
+            if (res.ok) {
+                window.location.href = "/";
+            } else {
+                console.error('Sign-in failed:', await res.json());
+            }
+        } catch (error) {
+            console.error('Error during sign-in:', error);
+        }
+    };
+
+    const handleCustomGoogleSignIn = () => {
+        if (window.google) {
+            window.google.accounts.id.prompt();
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col lg:flex-row bg-white">
@@ -28,9 +91,12 @@ export default function LoginPage() {
                         <div className="flex-1 h-px bg-zinc-200" />
                     </div>
                     <div className="flex justify-center gap-4 mb-8">
-                        <button className="rounded-full border border-zinc-200 p-3 hover:bg-zinc-50 transition"><FcGoogle size={22} /></button>
-                        <button className="rounded-full border border-zinc-200 p-3 hover:bg-zinc-50 transition"><FaApple size={20} /></button>
-                        <button className="rounded-full border border-zinc-200 p-3 hover:bg-zinc-50 transition"><FaFacebookF size={20} className="text-blue-600" /></button>
+                        <button
+                            onClick={handleCustomGoogleSignIn}
+                            className="rounded-full border border-zinc-200 p-3 hover:bg-zinc-50 transition"
+                        >
+                            <FcGoogle size={22} />
+                        </button>
                     </div>
                     <div className="text-center text-sm text-zinc-500">
                         Not a member?{' '}
