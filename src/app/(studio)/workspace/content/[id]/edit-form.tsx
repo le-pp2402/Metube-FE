@@ -4,29 +4,32 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { EyeIcon, ThumbsUpIcon } from "lucide-react";
-import { ResourceEditRequest } from "@/types/resource";
 import {
     fetchResourcesServerById,
     updateResources,
 } from "@/app/api/resources/fetch-server";
 import { Label } from "@/components/ui/label";
 import { RiFileVideoLine } from "react-icons/ri";
+import { ResourceUpdateInfo, ResourceUpdateRequest } from "@/types/resource";
 
 export interface EditFormProps {
     id: number;
 }
 
 export function EditForm({ id }: EditFormProps) {
-    const [videoInfo, setVideoInfo] = useState<ResourceEditRequest | null>(
+    const [resourceUpdateInfo, setResourceUpdateInfo] = useState<ResourceUpdateInfo | null>(
         null
     );
+
     const [message, setMessage] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchVideoInfo() {
             const videoInfo = await fetchResourcesServerById(id);
             if (videoInfo) {
-                setVideoInfo(videoInfo);
+                setResourceUpdateInfo(videoInfo);
+
+
                 console.log("FILE[EditForm] | videoInfo", videoInfo);
             }
         }
@@ -36,20 +39,26 @@ export function EditForm({ id }: EditFormProps) {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        if (!videoInfo) {
+        if (!resourceUpdateInfo) {
             setMessage("No video information to update");
             return;
         }
 
+
         try {
-            const result = await updateResources(id, videoInfo);
+            const result = await updateResources(id, {
+                title: resourceUpdateInfo.title,
+                description: resourceUpdateInfo.description,
+                isPrivate: resourceUpdateInfo.isPrivate
+            });
+
             if (result.success) {
                 setMessage(result.message || "Changes saved successfully!");
-                // Clear message after 3 seconds
                 setTimeout(() => setMessage(null), 3000);
             } else {
                 setMessage(result.error || "Failed to save changes");
             }
+
         } catch (error) {
             console.error("Error in handleSubmit:", error);
             setMessage("An unexpected error occurred");
@@ -71,7 +80,7 @@ export function EditForm({ id }: EditFormProps) {
                         Views:
                     </span>
                     <span className="text-lg font-semibold text-gray-900">
-                        {(videoInfo?.viewCount ?? 0).toLocaleString()}
+                        {(resourceUpdateInfo?.viewCount ?? 0).toLocaleString()}
                     </span>
                 </div>
 
@@ -82,7 +91,7 @@ export function EditForm({ id }: EditFormProps) {
                         Likes:
                     </span>
                     <span className="text-lg font-semibold text-gray-900">
-                        {(videoInfo?.likeCount ?? 0).toLocaleString()}
+                        {(resourceUpdateInfo?.likeCount ?? 0).toLocaleString()}
                     </span>
                 </div>
             </div>
@@ -91,7 +100,7 @@ export function EditForm({ id }: EditFormProps) {
                 <div>
                     <Label className="block font-medium mb-1">Title</Label>
                     <Input
-                        value={videoInfo?.title ?? ""}
+                        value={resourceUpdateInfo?.title ?? ""}
                         placeholder="Enter video title..."
                         className=" w-full 
                                     text-base 
@@ -107,9 +116,9 @@ export function EditForm({ id }: EditFormProps) {
                         Description
                     </Label>
                     <Textarea
-                        value={videoInfo?.description ?? ""}
+                        value={resourceUpdateInfo?.description ?? ""}
                         onChange={(e) =>
-                            setVideoInfo((v) =>
+                            setResourceUpdateInfo((v) =>
                                 v ? { ...v, description: e.target.value } : null
                             )
                         }
@@ -120,21 +129,20 @@ export function EditForm({ id }: EditFormProps) {
                 <div className="flex items-center gap-4">
                     <Label className="font-medium">Visible</Label>
                     <Switch
-                        checked={!videoInfo?.isPrivate}
+                        checked={!resourceUpdateInfo?.isPrivate}
                         onCheckedChange={(checked) =>
-                            setVideoInfo((prev) =>
+                            setResourceUpdateInfo((prev) =>
                                 prev ? { ...prev, isPrivate: !checked } : null
                             )
                         }
                     />
                     <span
-                        className={`text-sm ${
-                            videoInfo?.isPrivate
-                                ? "text-red-600"
-                                : "text-blue-600"
-                        }`}
+                        className={`text-sm ${resourceUpdateInfo?.isPrivate
+                            ? "text-red-600"
+                            : "text-blue-600"
+                            }`}
                     >
-                        {videoInfo?.isPrivate ? (
+                        {resourceUpdateInfo?.isPrivate ? (
                             <span className="inline-block px-2 py-0.5 rounded bg-red-100">
                                 Private
                             </span>

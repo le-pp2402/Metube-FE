@@ -12,8 +12,17 @@ export interface ResourceResponse {
     isPrivate: boolean;
 }
 
-export interface ResourceEditRequest {
+export interface ResourceUpdateRequest {
     title: string;
     description: string;
     isPrivate: boolean;
+}
+
+export interface ResourceUpdateInfo {
+    id: number;
+    title: string;
+    description: string;
+    isPrivate: boolean;
+    viewCount: number;
+    likeCount: number;
 }

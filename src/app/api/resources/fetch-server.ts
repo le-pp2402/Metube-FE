@@ -50,35 +50,38 @@ export async function updateResources(
             throw new Error("Resource data is required");
         }
 
+        const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
+
         const response = await fetch(
             `${BACKEND_API_URL}/workspace/content/${id}`,
             {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(resource),
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(resource),
             }
         );
 
-        console.log(response);
-
-        var result = await response.json();
-
-        console.log(result);
-
+        console.log("FILE[updateResources] | response", response);
+        
         if (!response.ok) {
-            throw new Error(
-                `Failed to update resource: ${await response.json()}`
-            );
+            return {
+                success: false,
+                error: "Failed to update resource",
+                message: "Failed to update resource",
+            }
         }
 
         const updatedResource = await response.json();
+
         return {
             success: true,
             data: updatedResource,
             message: "Resource updated successfully",
         };
+        
     } catch (error) {
         console.error("Error updating resource:", error);
         return {

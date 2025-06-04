@@ -21,7 +21,7 @@ export default async function getVideos(): Promise<Video[]> {
 
     if (!res.ok) throw new Error("Failed to fetch videos");
 
-    var resBody = await res.json();
+    const resBody = await res.json();
     console.log("FILE[getVideos] | resBody", resBody);
 
     return resBody.data;
