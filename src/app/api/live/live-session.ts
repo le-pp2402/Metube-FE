@@ -61,17 +61,10 @@ export async function stopLiveSession() {
     });
 
     if (!res.ok) {
-        const error = await res.json();
-        console.log("FILE[api/live/live-session.ts] | error", error);
-        throw new Error(error.message || "Failed to stop live session");
+        throw new Error("Failed to stop live session");
+    } else {
+        return true;
     }
-
-    console.log(res);
-
-    const { data } = await res.json();
-    console.log("FILE[live-session.ts] | data", data);
-
-    return true;
 }
 
 export async function getCurrentLiveSession() {
@@ -86,10 +79,13 @@ export async function getCurrentLiveSession() {
     });
 
     console.log("[CurrentLiveSession] {}", res);
+    
     if (!res.ok) {
         return null;
-    }
+    } 
 
-    const { data } = await res.json();
+    const data = await res.json();
+
+    console.log("FILE[live-session.ts] | data", data);
     return data;
 }

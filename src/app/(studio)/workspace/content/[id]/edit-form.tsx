@@ -10,7 +10,7 @@ import {
 } from "@/app/api/resources/fetch-server";
 import { Label } from "@/components/ui/label";
 import { RiFileVideoLine } from "react-icons/ri";
-import { ResourceUpdateInfo, ResourceUpdateRequest } from "@/types/resource";
+import { ResourceUpdateInfo } from "@/types/resource";
 
 export interface EditFormProps {
     id: number;

@@ -5,7 +5,7 @@ import { EditForm } from "./edit-form";
 import { SubtitleList, SubtitleFile } from "./subtitle-list";
 import { SubtitleViewer } from "./subtitle-viewer";
 import { useParams } from "next/navigation";
-import UploadSubtitleForm from "./upload-subtitle-form";
+import UploadSubtitleForm from "./append-advertising";
 
 
 export default function EditContentPage() {

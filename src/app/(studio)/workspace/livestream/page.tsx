@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Copy, Eye, Heart, Radio } from "lucide-react";
+import { Copy, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -21,12 +22,11 @@ import {
     startLiveSession,
     stopLiveSession,
 } from "@/app/api/live/live-session";
+import Image from "next/image";
 
 export default function LivestreamPage() {
     const [streamKey, setStreamKey] = useState("");
     const [title, setTitle] = useState("Check this");
-    const [viewCount] = useState(0);
-    const [likeCount] = useState(0);
     const [isLive, setIsLive] = useState(false);
     const [videoUrl, setVideoUrl] = useState("");
     const [justCopied, setJustCopied] = useState(false);
@@ -59,6 +59,7 @@ export default function LivestreamPage() {
 
         const fetchCurrentLiveSessionState = async () => {
             const data = await getCurrentLiveSession();
+            console.log("[workspace/livestream/page.tsx] current live session data,", data);
             if (data != null) {
                 setTitle(data.title);
                 setIsLive(true);
@@ -130,44 +131,6 @@ export default function LivestreamPage() {
                     <div className="rounded-lg overflow-hidden mb-4">
                         <LiveVideoPlayer videoUrl={videoUrl} />
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                        {[
-                            {
-                                icon: Eye,
-                                label: "Views",
-                                count: viewCount,
-                                color: "blue",
-                            },
-                            {
-                                icon: Heart,
-                                label: "Likes",
-                                count: likeCount,
-                                color: "purple",
-                            }
-                        ].map(({ icon: Icon, label, count, color }) => (
-                            <Card key={label}>
-                                <CardContent className="p-4">
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={`p-2 bg-${color}-100 rounded-full`}
-                                        >
-                                            <Icon
-                                                className={`h-5 w-5 text-${color}-600`}
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-600">
-                                                {label}
-                                            </p>
-                                            <p className="text-xl font-semibold">
-                                                {count}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
                 </div>
 
                 {/* Sidebar: Settings & Chat */}
@@ -194,6 +157,7 @@ export default function LivestreamPage() {
                                     required
                                 />
                             </div>
+
 
                             {/* Stream Key */}
                             <div className="space-y-2">
@@ -236,6 +200,20 @@ export default function LivestreamPage() {
                                 {isLive ? "End Stream" : "Start Stream"}
                             </Button>
                         </CardContent>
+
+                        <CardFooter className="space-y-4">
+                            <div className="text-base space-y-2">
+                                <p className="text-lg">To start streaming:</p>
+                                <ol className="list-decimal ml-4 text-base leading-relaxed">
+                                    <li>Open OBS Studio</li>
+                                    <li>Go to Settings → Stream</li>
+                                    <li>Select &quot;Custom...&quot; as Service</li>
+                                    <li>Set Server to: <code className="bg-slate-100 px-1 rounded text-base">rtmp://pphatdev.tech/live</code></li>
+                                    <li>Copy and paste your Stream Key</li>
+                                    <li>Click &quot;Apply&quot; and &quot;OK&quot;</li>
+                                </ol>
+                            </div>
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
