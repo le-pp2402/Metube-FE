@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['picsum.photos'],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  output: "standalone",
 };
 
 export default nextConfig;

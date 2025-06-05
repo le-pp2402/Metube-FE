@@ -12,5 +12,4 @@ export interface VideoInfo extends Video {
   username: string;
   video: string;
   description: string;
-  tags: string[];
 }

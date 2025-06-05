@@ -22,11 +22,13 @@ export default function LiveChat({ channelId }: Props) {
     const [input, setInput] = useState("");
     const stompClientRef = useRef<Client | null>(null);
 
+    const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         const client = new Client({
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+            webSocketFactory: () => new SockJS(`${BACKEND_API}/ws`),
             connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
             reconnectDelay: 5000,
             onConnect: () => {
@@ -34,8 +36,8 @@ export default function LiveChat({ channelId }: Props) {
                 client.subscribe(`/channel/${channelId}`, (messageOutput: IMessage) => {
                     const msg: Message = JSON.parse(messageOutput.body);
                     setMessages((prev) => [...prev, msg]);
-                    if (messages.length > 100) {
-                        setMessages(messages.slice(50));
+                    if (messages.length > 10) {
+                        setMessages(messages.slice(5));
                     }
                 });
             },
@@ -58,9 +60,9 @@ export default function LiveChat({ channelId }: Props) {
 
     return (
         <div className="flex flex-col h-[790px] w-full border border-gray-300 rounded-2xl shadow-xl bg-white p-4 text-sm">
-            <ScrollArea className="flex-1 pr-2">
+            <ScrollArea className="flex-1 pr-2" >
                 <div className="space-y-3">
-                    {messages.map((msg, idx) => (
+                    {messages.slice(Math.max(messages.length - 8, 0)).map((msg, idx) => (
                         <div
                             key={idx}
                             className="bg-gray-100 hover:bg-gray-200 transition-colors duration-150 text-gray-900 px-4 py-3 rounded-xl shadow-sm break-words"

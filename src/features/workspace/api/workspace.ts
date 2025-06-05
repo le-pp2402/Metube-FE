@@ -109,3 +109,50 @@ export async function regenerateStreamKey() {
         return { error: 'An error occurred while regenerating stream key' };
     }
 } 
+
+export async function getStatistics() {
+    try {
+        const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
+        const res = await fetch(`${BACKEND_API_URL}/statistic`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch statistics');
+        }
+
+        const data = await res.json();
+        return { data: data.data };
+    } catch (error) {
+        console.error('Error fetching statistics:', error);
+        return { error: 'An error occurred while fetching statistics' };
+    }
+}
+
+export async function appendAdvertising(
+    videoId: number
+) {
+    try {
+        const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
+        const res = await fetch(`${BACKEND_API_URL}/resources/add-ad/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to append advertising');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error appending advertising:', error);
+        return { error: 'An error occurred while appending advertising' };
+    }
+}

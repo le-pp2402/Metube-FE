@@ -1,6 +1,6 @@
 "use server";
 
-import { Video, VideoInfo } from "@/types/video";
+import { VideoInfo } from "@/types/video";
 import { cookies } from "next/headers";
 
 
@@ -21,7 +21,7 @@ export default async function getVideoInfo(id: number): Promise<VideoInfo> {
 
     if (!res.ok) throw new Error("Failed to fetch video info");
 
-    var resBody = await res.json();
+    const resBody = await res.json();
     console.log("FILE[getVideoInfo] | resBody", resBody);
     return resBody.data;
 }

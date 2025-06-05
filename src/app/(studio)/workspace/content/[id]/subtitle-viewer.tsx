@@ -29,7 +29,7 @@ export function SubtitleViewer({ subtitle, showGeminiForm, onToggleGeminiForm }:
                 <BsChatSquareText className="mr-2" />
                 Subtitle Viewer
             </h2>
-
+            
 
             <div className="bg-gray-50 rounded p-3 min-h-[120px] text-sm whitespace-pre-wrap border">
                 {subtitle ? subtitle.content : <span className="text-gray-400">Select a subtitle file to view its content.</span>}

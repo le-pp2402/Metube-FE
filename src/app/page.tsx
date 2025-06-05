@@ -1,7 +1,5 @@
 "use client"
-import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+
 import { useEffect, useState } from "react";
 import getVideos from "./api/videos/get-videos";
 import { Video } from "@/types/video";
@@ -64,33 +62,6 @@ const mockVideos: Video[] = [
     createdAt: "4 days ago",
     thumbnail: "https://picsum.photos/seed/v6/800/450",
     likes: 600,
-  },
-  {
-    id: "v7",
-    title: "Equestria Girls Movie Review",
-    views: 1800,
-    uploader: "PonyReviewer",
-    createdAt: "5 days ago",
-    thumbnail: "https://picsum.photos/seed/v7/800/450",
-    likes: 700,
-  },
-  {
-    id: "v8",
-    title: "Best Songs Compilation 2024",
-    views: 2300,
-    uploader: "MusicMaster",
-    createdAt: "1 week ago",
-    thumbnail: "https://picsum.photos/seed/v8/800/450",
-    likes: 800,
-  },
-  {
-    id: "v9",
-    title: "Character Analysis - Twilight Sparkle",
-    views: 1100,
-    uploader: "PonyScholar",
-    createdAt: "1 week ago",
-    thumbnail: "https://picsum.photos/seed/v9/800/450",
-    likes: 900,
   },
 ];
 

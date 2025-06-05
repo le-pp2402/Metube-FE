@@ -1,6 +1,5 @@
 'use server';
 
-import { z } from 'zod';
 import { VerifyEmailSchema } from './validation';
 import { VerifyResponse } from './form-state';
 

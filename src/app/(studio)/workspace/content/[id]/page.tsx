@@ -5,6 +5,7 @@ import { EditForm } from "./edit-form";
 import { SubtitleList, SubtitleFile } from "./subtitle-list";
 import { SubtitleViewer } from "./subtitle-viewer";
 import { useParams } from "next/navigation";
+import UploadSubtitleForm from "./append-advertising";
 
 
 export default function EditContentPage() {
@@ -32,23 +33,33 @@ export default function EditContentPage() {
     const [selectedSubtitle, setSelectedSubtitle] = useState<SubtitleFile | null>(subtitles[0]);
     const [showGeminiForm, setShowGeminiForm] = useState(false);
     return (
+        <>
         <div className="flex flex-col md:flex-row gap-8 py-12 max-w-[1400px] mx-auto px-6">
-            <div className="w-1/3 min-w-[320px] border rounded-lg p-8 shadow-sm">
-                <EditForm id={id} />
+            <div className="w-1/3 min-w-[320px] space-y-4">
+                <div className="border rounded-lg p-8 shadow-sm">
+                    <EditForm id={id} />
+                </div>
+                <div className="border rounded-lg p-8 shadow-sm">
+                    <UploadSubtitleForm />
+                </div>
             </div>
-            <div className="flex flex-col flex-1 w-2/3 min-w-[480px] border rounded-lg p-8 shadow-sm">
-                <SubtitleList
-                    subtitles={subtitles}
-                    selected={selectedSubtitle}
-                    onSelect={setSelectedSubtitle}
-                    onDelete={() => { }}
-                />
-                <SubtitleViewer
-                    subtitle={selectedSubtitle}
-                    showGeminiForm={showGeminiForm}
-                    onToggleGeminiForm={() => setShowGeminiForm(v => !v)}
-                />
+            
+            <div className="w-2/3 min-w-[480px] border rounded-lg p-8 shadow-sm h-fit">
+                <div className="flex flex-col">
+                    <SubtitleList
+                        subtitles={subtitles}
+                        selected={selectedSubtitle}
+                        onSelect={setSelectedSubtitle}
+                        onDelete={() => { }}
+                    />
+                    <SubtitleViewer
+                        subtitle={selectedSubtitle}
+                        showGeminiForm={showGeminiForm}
+                        onToggleGeminiForm={() => setShowGeminiForm(v => !v)}
+                        />
+                </div>
             </div>
         </div>
+        </>
     );
 }

@@ -28,7 +28,6 @@ export function AuthProvider({
 
     const refreshUser = useCallback(async () => {
         try {
-
             const response = await fetch('/api/auth/me', {
                 credentials: 'include',
                 headers: {
@@ -57,7 +56,7 @@ export function AuthProvider({
 
     const logout = useCallback(async () => {
         try {
-            const result = await serverLogout();
+            await serverLogout();
             setUser(null);
             router.push("/");
             router.refresh();

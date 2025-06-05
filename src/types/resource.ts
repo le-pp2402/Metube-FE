@@ -3,7 +3,7 @@ export interface ResourceResponse {
     title: string;
     video: string;
     thumbnail: string;
-    status: 'UPLOADING' | 'WAITING' | 'PROCESSING' | 'READY' | string;
+    status: "UPLOADING" | "WAITING" | "PROCESSING" | "READY" | string;
     username: string;
     createdAt: string;
     viewCount: number;
@@ -12,11 +12,17 @@ export interface ResourceResponse {
     isPrivate: boolean;
 }
 
-export interface ResourceEditRequest {
+export interface ResourceUpdateRequest {
+    title: string;
+    description: string;
+    isPrivate: boolean;
+}
+
+export interface ResourceUpdateInfo {
     id: number;
     title: string;
     description: string;
+    isPrivate: boolean;
     viewCount: number;
     likeCount: number;
-    isPrivate: boolean;
 }
