@@ -6,6 +6,6 @@ export default async function LiveWrapper({
     params: Promise<{ id: string }>;
 }) {
     const resolvedParams = await params;
-
+    console.log("FILE[LiveWrapper] | resolvedParams", resolvedParams);
     return <LivePage idLiveSession={resolvedParams.id} />;
 }

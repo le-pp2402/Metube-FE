@@ -1,19 +1,15 @@
 'use client';
 
-import { SubtitleStatusCard } from '@/components/workspace/SubtitleStatusCard';
 import { VideoStatusCard } from '@/components/workspace/VideoStatusCard';
-import { useAuth } from '@/context/AuthContext';
 
 export function WorkspacePage() {
-    const { user } = useAuth();
-
     return (
         <div className="container py-6">
             <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
             <div className="grid grid-cols-2 gap-6 mb-6">
                 <VideoStatusCard />
-                <SubtitleStatusCard />
+                {/* <SubtitleStatusCard /> */}
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">

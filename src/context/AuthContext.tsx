@@ -28,7 +28,6 @@ export function AuthProvider({
 
     const refreshUser = useCallback(async () => {
         try {
-
             const response = await fetch('/api/auth/me', {
                 credentials: 'include',
                 headers: {

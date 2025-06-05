@@ -2,20 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Home, LogOut, Video, Search, SettingsIcon, RadioIcon } from "lucide-react";
+import { Home, LogOut, Video, Search, RadioIcon } from "lucide-react";
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 
 const sidebarItems = [
     { icon: Home, label: "Overview", link: "/workspace" },
     { icon: Video, label: "Content", link: "/workspace/content" },
     { icon: RadioIcon, label: "Live Stream", link: "/workspace/livestream" },
-    { icon: SettingsIcon, label: "Settings", link: "/workspace/settings" },
 ];
-
 
 export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -37,8 +34,7 @@ export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center gap-3 mb-8 px-2">
                     <div className="bg-zinc-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold">P</div>
                     <div>
-                        <div className="font-semibold text-lg leading-tight">Your channel</div>
-                        <div className="text-xs text-zinc-400">Phi Phat Lê</div>
+                        <div className="font-semibold text-lg leading-tight">Your channel {user.username} </div>
                     </div>
                 </div>
                 <nav className="flex-1 space-y-1">

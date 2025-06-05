@@ -1,6 +1,6 @@
 "use server";
 
-import { ResourceEditRequest, ResourceResponse } from "@/types/resource";
+import { ResourceResponse, ResourceUpdateInfo, ResourceUpdateRequest } from "@/types/resource";
 import { cookies } from "next/headers";
 
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME ?? "token";
@@ -26,7 +26,7 @@ export default async function fetchResourcesServer(): Promise<
 
 export async function fetchResourcesServerById(
     id: number
-): Promise<ResourceEditRequest> {
+): Promise<ResourceUpdateInfo> {
     const token = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
 
     const res = await fetch(`${BACKEND_API_URL}/workspace/content/${id}`, {
@@ -43,7 +43,7 @@ export async function fetchResourcesServerById(
 
 export async function updateResources(
     id: number,
-    resource?: ResourceEditRequest
+    resource?: ResourceUpdateRequest
 ) {
     try {
         if (!resource) {
@@ -65,7 +65,7 @@ export async function updateResources(
         );
 
         console.log("FILE[updateResources] | response", response);
-        
+
         if (!response.ok) {
             return {
                 success: false,

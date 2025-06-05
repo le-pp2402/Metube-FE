@@ -60,18 +60,6 @@ export default function Header() {
                             <DropdownMenuItem asChild>
                                 <Link href="/workspace" className="w-full">Dashboard</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/workspace/videos" className="w-full">My Videos</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/workspace/upload" className="w-full">Upload Video</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/workspace/stream-key" className="w-full">Stream Key</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/workspace/channel" className="w-full">Channel Settings</Link>
-                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={logout} className="cursor-pointer">
                                 <span className="w-full">Logout</span>
                             </DropdownMenuItem>

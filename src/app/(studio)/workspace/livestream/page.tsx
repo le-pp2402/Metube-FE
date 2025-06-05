@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Copy, Eye, Heart, MessageSquare, Radio } from "lucide-react";
+import { Copy, Eye, Heart, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -25,11 +24,10 @@ import {
 
 export default function LivestreamPage() {
     const [streamKey, setStreamKey] = useState("");
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState("Check this");
     const [viewCount] = useState(0);
     const [likeCount] = useState(0);
     const [isLive, setIsLive] = useState(false);
-    const [messages, setMessages] = useState<string[]>([]);
     const [videoUrl, setVideoUrl] = useState("");
     const [justCopied, setJustCopied] = useState(false);
 
@@ -64,22 +62,47 @@ export default function LivestreamPage() {
             if (data != null) {
                 setTitle(data.title);
                 setIsLive(true);
+            } else {
+                setIsLive(false);
             }
         };
+
         fetchUserInfo();
         fetchCurrentLiveSessionState();
     }, []);
 
-    useEffect(() => {
-        const manageLiveSession = async () => {
-            if (isLive) {
+    const manageLiveSession = async () => {
+        try {
+            if (!isLive) {
+                // Starting the stream
                 await startLiveSession({ title: title ?? "live" });
+                toast.success("Live stream started successfully!");
             } else {
+                // Stopping the stream
                 await stopLiveSession();
+                toast.success("Live stream stopped successfully!");
             }
-        };
-        manageLiveSession();
-    }, [isLive]);
+        } catch (error) {
+            console.error("Error managing live session:", error);
+            toast.error(`Failed to ${!isLive ? 'start' : 'stop'} live session`);
+            // Revert the state change if the API call failed
+            // Note: This will be handled by the onClick function
+        }
+    };
+
+    const handleLiveToggle = async () => {
+        const previousState = isLive;
+
+        // Optimistically update the UI
+        setIsLive(!isLive);
+
+        try {
+            await manageLiveSession();
+        } catch (error) {
+            // Revert the state if the operation failed
+            setIsLive(previousState);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-3 p-1">
@@ -90,14 +113,12 @@ export default function LivestreamPage() {
                 </h1>
                 <Badge
                     variant={isLive ? "default" : "secondary"}
-                    className={`text-sm ${
-                        isLive ? "bg-green-600 text-white" : ""
-                    }`}
+                    className={`text-sm ${isLive ? "bg-green-600 text-white" : ""
+                        }`}
                 >
                     <Radio
-                        className={`h-4 w-4 mr-1 ${
-                            isLive ? "text-white animate-pulse" : ""
-                        }`}
+                        className={`h-4 w-4 mr-1 ${isLive ? "text-white animate-pulse" : ""
+                            }`}
                     />
                     {isLive ? "LIVE" : "OFFLINE"}
                 </Badge>
@@ -122,13 +143,7 @@ export default function LivestreamPage() {
                                 label: "Likes",
                                 count: likeCount,
                                 color: "purple",
-                            },
-                            {
-                                icon: MessageSquare,
-                                label: "Comments",
-                                count: messages.length,
-                                color: "green",
-                            },
+                            }
                         ].map(({ icon: Icon, label, count, color }) => (
                             <Card key={label}>
                                 <CardContent className="p-4">
@@ -197,11 +212,10 @@ export default function LivestreamPage() {
                                         aria-label="Copy stream key"
                                     >
                                         <Copy
-                                            className={`h-5 w-5 ${
-                                                justCopied
-                                                    ? "text-green-500"
-                                                    : "text-gray-500"
-                                            }`}
+                                            className={`h-5 w-5 ${justCopied
+                                                ? "text-green-500"
+                                                : "text-gray-500"
+                                                }`}
                                         />
                                     </Button>
                                     <Button
@@ -215,80 +229,13 @@ export default function LivestreamPage() {
 
                             {/* Live Toggle */}
                             <Button
-                                onClick={() => setIsLive(!isLive)}
+                                onClick={handleLiveToggle}
                                 className="w-full"
                                 variant={isLive ? "destructive" : "default"}
                             >
                                 {isLive ? "End Stream" : "Start Stream"}
                             </Button>
                         </CardContent>
-                    </Card>
-
-                    {/* Live Chat */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">Live Chat</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div
-                                className="h-[300px] bg-slate-50 rounded-lg p-4 overflow-y-auto scrollbar-hide"
-                                style={{
-                                    scrollbarWidth: "none",
-                                    msOverflowStyle: "none",
-                                }}
-                                ref={(el) => {
-                                    if (el) el.scrollTop = el.scrollHeight;
-                                }}
-                            >
-                                {messages.length === 0 ? (
-                                    <p className="text-center text-slate-500 text-sm">
-                                        No messages yet
-                                    </p>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {messages.map((msg, i) => (
-                                            <div
-                                                key={i}
-                                                className="bg-white p-3 rounded-lg shadow-sm"
-                                            >
-                                                {msg}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <div className="flex gap-2 w-full">
-                                <Input
-                                    placeholder="Type a message..."
-                                    className="border-slate-200 flex-1"
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            setMessages((prev) => [
-                                                ...prev,
-                                                (e.target as HTMLInputElement)
-                                                    .value,
-                                            ]);
-                                            (
-                                                e.target as HTMLInputElement
-                                            ).value = "";
-                                        }
-                                    }}
-                                />
-                                <Button
-                                    className="whitespace-nowrap"
-                                    onClick={() =>
-                                        setMessages((prev) => [
-                                            ...prev,
-                                            "Test message",
-                                        ])
-                                    }
-                                >
-                                    Send
-                                </Button>
-                            </div>
-                        </CardFooter>
                     </Card>
                 </div>
             </div>

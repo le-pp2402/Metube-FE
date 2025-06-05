@@ -1,7 +1,5 @@
 "use client"
-import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+
 import { useEffect, useState } from "react";
 import getVideos from "./api/videos/get-videos";
 import { Video } from "@/types/video";
