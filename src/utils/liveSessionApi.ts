@@ -1,10 +1,9 @@
-"use server";
 import axios from "axios";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL ?? "http://localhost:8888";
+const BACKEND_API_URL = process.env.PUBLIC_BACKEND_API_URL ?? "http://localhost:8888";
 
 export const getLiveSessions = async () => {
-    console.log("getLiveSessins: " + BACKEND_API_URL);
+    console.log("getLiveSessions: " + BACKEND_API_URL);
     return await axios.get(`${BACKEND_API_URL}/live-session`);
 };
 

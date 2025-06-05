@@ -22,11 +22,13 @@ export default function LiveChat({ channelId }: Props) {
     const [input, setInput] = useState("");
     const stompClientRef = useRef<Client | null>(null);
 
+    const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         const client = new Client({
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+            webSocketFactory: () => new SockJS(`${BACKEND_API}/ws`),
             connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
             reconnectDelay: 5000,
             onConnect: () => {
