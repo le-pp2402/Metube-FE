@@ -4,14 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { Tv, Radio } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
+import { Input } from "./ui/input";
 
-export default function Header() {
+export default function Header({ onSearch }: { onSearch: (query: string) => void }) {
     const { user, logout, refreshUser } = useAuth();
     const [mounted, setMounted] = useState(false);
+    const [inputValue, setInputValue] = useState<string>("");
 
     useEffect(() => {
         setMounted(true);
@@ -21,6 +23,13 @@ export default function Header() {
     if (!mounted) {
         return null;
     }
+
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInputValue(value);
+        onSearch(value); // gọi callback để truyền dữ liệu về page.tsx
+    };
 
     return (
         <nav className="flex items-center justify-between px-6 py-3 bg-white shadow-md">
@@ -39,10 +48,13 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* <div className="relative flex-1 max-w-lg">
+            <div className="relative flex-1 max-w-lg">
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                <Input placeholder="Search videos..." className="pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:ring-primary focus:border-primary" />
-            </div> */}
+                <Input placeholder="Search videos..."
+                    className="pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:ring-primary focus:border-primary"
+                    value={inputValue}
+                    onChange={handleInputChange} />
+            </div>
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

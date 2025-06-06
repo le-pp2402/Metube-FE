@@ -67,20 +67,28 @@ const mockVideos: Video[] = [
 
 export default function VideoList() {
   const [videos, setVideos] = useState<Video[]>(mockVideos);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const data = await getVideos();
-
-      console.log("FILE[page.tsx] | data");
+      const data = await getVideos(searchTerm);
       setVideos(data);
     };
+
     fetchVideos();
-  }, []);
+  }, [searchTerm]);
+
+  // useEffect(() => {
+  //   const fetchVideos = async () => {
+  //     const data = await getVideos();
+  //     setVideos(data);
+  //   };
+  //   fetchVideos();
+  // }, []);
 
   return (
     <>
-      <Header />
+      <Header onSearch={setSearchTerm} />
       <div className="bg-[#f8f8f8] min-h-screen p-4">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -90,7 +98,6 @@ export default function VideoList() {
           </div>
         </div>
       </div>
-
       <Footer />
     </>
   );
