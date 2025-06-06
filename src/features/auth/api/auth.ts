@@ -22,6 +22,8 @@ export async function signup(prevState: ActionState, formData: FormData): Promis
         };
     }
 
+    console.log('Validated fields:', validatedFields.data);
+
     try {
         const res = await fetch(`${BACKEND_API_URL}/register`, {
             method: 'POST',
@@ -31,19 +33,22 @@ export async function signup(prevState: ActionState, formData: FormData): Promis
             body: JSON.stringify(validatedFields.data),
         });
 
-        if (!res.ok) {
+        console.log('Response from registration:', res);
+
+        if (res.status < 200 || res.status >= 300) {
             const error = await res.json();
             return {
-                message: error.message || 'Something went wrong',
+                message: error?.data || 'Something went wrong',
             };
         }
 
-        redirect('/login');
     } catch (error) {
         return {
             message: 'An error occurred during registration',
         };
     }
+    
+    redirect(`/verify?email=${validatedFields.data.email}`);
 }
 
 export async function login(data: { username: string; password: string }): Promise<{ error?: string; user?: any }> {

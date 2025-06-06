@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import VideoPlayer from "@/components/watch/VideoPlayer";
-import RecommendList from "@/components/watch/RecommendList";
-import DescriptionVideoCard from "@/components/watch/DescriptionVideoCard";
 import { useSearchParams } from "next/navigation";
+import VideoPlayer from "@/components/watch/VideoPlayer";
+import DescriptionVideoCard from "@/components/watch/DescriptionVideoCard";
+import RecommendList from "@/components/watch/RecommendList";
 
 export default function WatchPage() {
     const searchParams = useSearchParams();

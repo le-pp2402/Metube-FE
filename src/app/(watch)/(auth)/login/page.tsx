@@ -131,9 +131,6 @@ export default function LoginPage() {
                         Simplify your workflow and boost your productivity with <span className="font-semibold text-zinc-900">MeTube</span>. Get started for free.
                     </p>
                     <LoginForm callbackUrl={callbackUrl} />
-                    <div className="flex justify-end mt-2 mb-6">
-                        <a href="#" className="text-xs text-zinc-500 hover:underline">Forgot Password?</a>
-                    </div>
                     <div className="flex items-center my-6">
                         <div className="flex-1 h-px bg-zinc-200" />
                         <span className="mx-4 text-zinc-400 text-sm">or continue with</span>

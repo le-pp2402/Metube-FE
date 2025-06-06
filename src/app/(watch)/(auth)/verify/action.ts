@@ -3,7 +3,7 @@
 import { VerifyEmailSchema } from './validation';
 import { VerifyResponse } from './form-state';
 
-const BACKEND_API_URL = process.env.API;
+const BACKEND_API_URL = process.env.BACKEND_API_URL ?? 'http://localhost:8080';
 
 if (!BACKEND_API_URL) {
     console.error("BACKEND_API_URL is not set in environment variables!");

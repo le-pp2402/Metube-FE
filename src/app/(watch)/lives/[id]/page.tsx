@@ -24,7 +24,6 @@ type LiveSession = {
 export default function LivePage() {
 
     const { id } = useParams();
-
     const [liveSession, setLiveSession] = useState<LiveSession | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -43,9 +42,7 @@ export default function LivePage() {
 
 
                 const liveSS = await response.json();
-
                 console.log("livess", liveSS);
-
                 if (!liveSS) {
                     setError("No live session data found");
                 }

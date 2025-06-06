@@ -95,7 +95,7 @@ export function LoginForm({ callbackUrl = '/workspace' }: LoginFormProps) {
                     {error}
                 </motion.div>
             )}
-            <Button
+            <Button className="mt-2 w-full"
                 type="submit"
                 disabled={loading}
             >
