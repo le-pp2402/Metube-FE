@@ -40,7 +40,7 @@ export default function EditContentPage() {
                     <EditForm id={id} />
                 </div>
                 <div className="border rounded-lg p-8 shadow-sm">
-                    <UploadSubtitleForm />
+                    <UploadSubtitleForm id = {id}/>
                 </div>
             </div>
             

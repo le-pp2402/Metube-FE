@@ -119,10 +119,6 @@ export default async function ChannelPage() {
                                                     <Pencil className="h-5 w-5 text-blue-600" />
                                                     <Link href={`/workspace/content/${video.id}`}>Edit</Link>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 text-base">
-                                                    <Trash className="h-5 w-5" />
-                                                    Delete
-                                                </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
