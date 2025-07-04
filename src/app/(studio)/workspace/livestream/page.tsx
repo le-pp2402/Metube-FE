@@ -54,7 +54,7 @@ export default function LivestreamPage() {
         const fetchUserInfo = async () => {
             const data = (await getUserInfo()).user;
             console.log("[workspace/livestream/page.tsx] data,", data);
-            setVideoUrl(data?.username ? `hls/${data.username}.m3u8` : "");
+            setVideoUrl(data?.username ? `hlsbucket/${data.username}.m3u8` : "");
         };
 
         const fetchCurrentLiveSessionState = async () => {
