@@ -48,7 +48,7 @@ export default function LivePage() {
                 }
 
                 setLiveSession(liveSS.data);
-                setStreamUrl(`${NEXT_PUBLIC_LIVE_API_URL}hls/${liveSS.data.path}`);
+                setStreamUrl(`${NEXT_PUBLIC_LIVE_API_URL}hlsbucket/${liveSS.data.path}`);
             } catch (error: any) {
                 console.error("Error fetching live session:", error);
                 if (error.code === "ERR_NETWORK") {
