@@ -29,16 +29,16 @@ export function SubtitleViewer({ subtitle, showGeminiForm, onToggleGeminiForm }:
                 <BsChatSquareText className="mr-2" />
                 Subtitle Viewer
             </h2>
-            
+
 
             <div className="bg-gray-50 rounded p-3 min-h-[120px] text-sm whitespace-pre-wrap border">
                 {subtitle ? subtitle.content : <span className="text-gray-400">Select a subtitle file to view its content.</span>}
             </div>
             <div className="flex gap-2 mt-4">
-                <Button type="button" onClick={handleGenerate} disabled={!subtitle}>
+                <Button type="button" onClick={handleGenerate} disabled>
                     Generate Description
                 </Button>
-                <Button type="button" variant="outline" onClick={onToggleGeminiForm}>
+                <Button type="button" variant="outline" onClick={onToggleGeminiForm} disabled>
                     {showGeminiForm ? "Hide Gemini API Key" : "Add Gemini API Key"}
                 </Button>
             </div>

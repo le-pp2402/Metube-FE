@@ -20,7 +20,9 @@ export default function UploadPopup() {
             setStatus("Uploading...");
             const xhr = new XMLHttpRequest();
             xhr.open("PUT", uploadUrl);
-            xhr.setRequestHeader("Content-Type", file.type);
+
+            console.log("Uploading file:", file.name, "to URL:", uploadUrl);
+            // xhr.setRequestHeader("Content-Type", file.type);
             xhr.upload.onprogress = (e) => {
                 if (e.lengthComputable) {
                     setProgress(Math.round((e.loaded / e.total) * 100));
@@ -34,12 +36,12 @@ export default function UploadPopup() {
                     setTimeout(() => window.close(), 1000);
                 } else {
                     setStatus("Upload failed");
-                    console.error("Upload failed:", xhr.statusText);
+                    console.error("Upload failed:", xhr.statusText, xhr.responseText);
                 }
             };
-            xhr.onerror = () => {
+            xhr.onerror = (error) => {
                 setStatus("Upload failed");
-                console.error("Upload failed");
+                console.error("Upload failed:", error);
             };
             xhr.send(file);
         }

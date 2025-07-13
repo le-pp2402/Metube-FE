@@ -16,10 +16,10 @@ export interface SubtitleListProps {
 
 export function SubtitleList({ subtitles, selected, onSelect, onDelete }: SubtitleListProps) {
     return (
-        <div className="mb-4">
+        <div className="mb-4 disabled">
             <h2 className="text-lg font-semibold mb-2 flex items-center">
                 <MdOutlineSubtitles className="mr-2" />
-                Subtitles
+                Subtitles (Not available in the current version)
             </h2>
             {subtitles.length === 0 ? (
                 <div className="text-gray-500 text-sm">No subtitles available</div>

@@ -53,6 +53,8 @@ export default function UploadVideoForm() {
         try {
             const { url: uploadUrl } = await getPresignedUrl({ title: values.title });
 
+            console.log('Presigned URL:', uploadUrl);
+
             const finalUrl = uploadUrl.replace("http://minio:9000", "https://s3.pphatdev.tech");
             console.log('Presigned URL:', finalUrl);
             const handlePopupReady = (event: MessageEvent) => {
